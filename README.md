@@ -6,9 +6,9 @@ A platform designed to meet my needs of tracking my finances. Currently early in
 
 ## Motivation
 
-Although there are many excellent free and paid solutions for tracking finances, everyone's situation is slightly different and none of these applications truly met my needs. Many of these apps, such as YNAB, are designed to be inclusive and offering various features depending on the individual's situation.
+Although there are many excellent free and paid solutions for tracking finances, everyone's situation is slightly different and none of these applications truly met my needs. Many of these apps, such as YNAB, are designed for a wide audience by offering various features depending on the individual's situation. For me, many of these features are unnecessasary and make the system cluttered and overwhelming to use.
 
-I specifically need something that matches my approach to tracking and calculating my finances, in accordance with my current financial situation. In addition, I needed it to:
+I specifically need something that matches my approach to tracking and managing my finances, in accordance with my current financial situation. In addition, I needed it to:
 
 - Have no unnecessary features
 - Have no subscription or marketing

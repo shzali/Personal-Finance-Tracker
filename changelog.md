@@ -2,6 +2,7 @@
 
 - Can assign an expense to a category (no meaningful purpose yet).
 - Can remove an expense.
+- Can specify if the expense is recreational
 
 ### 5th August 2026
 

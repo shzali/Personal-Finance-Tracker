@@ -76,8 +76,10 @@ export default function Home() {
   };
 
   const toggleRecreational = (id: number) => {
-    const expense = expenses.find((exp) => exp.id === id)!;
+    const newExpenses = [...expenses];
+    const expense = newExpenses.find((exp) => exp.id === id)!;
     expense.isRecreational = !expense?.isRecreational;
+    setExpenses(newExpenses);
   };
 
   return (
@@ -92,7 +94,7 @@ export default function Home() {
       <button onClick={addExpense}>+</button>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {expenses.map((exp) => (
-          <div>
+          <div style={{ marginBottom: "1.5rem" }}>
             <select>
               {categories.map((item) => (
                 <option key={item} value={item}>
@@ -106,13 +108,14 @@ export default function Home() {
               value={exp.amount}
               onChange={(e) => changeExpenseAmount(e.target.value, exp.id)}
             />
-            {/* <input type="checkbox" id={exp.id.toString()} checked={exp.isRecreational} onChange={() => {
-              expenses.map(e => {
-                if (e.id === exp.id) {
-                  retur
-                }
-              })
-            }} */}
+            <input
+              type="checkbox"
+              id={exp.id.toString()}
+              checked={exp.isRecreational}
+              onChange={() => toggleRecreational(exp.id)}
+            />
+            <label htmlFor={exp.id.toString()}>Is recreational</label>
+            <br />
             <button onClick={() => removeExpense(exp.id)}>Remove</button>
           </div>
         ))}
