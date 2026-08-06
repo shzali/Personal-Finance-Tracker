@@ -4,28 +4,58 @@
 import Image from "next/image";
 import { useState } from "react";
 
-interface ratio {
+interface Ratio {
   investings: number;
   savings: number;
 }
 
+interface Category {
+  name: string;
+}
+
+interface Expense {
+  id: number;
+  category: string;
+  amount: number;
+  isRecreational: boolean;
+}
+
 export default function Home() {
   const [income, setIncome] = useState<number>(0);
-  const [expenses, setExpenses] = useState<number[]>([]);
-  const [ratio, setRatio] = useState<ratio>({ investings: 0.5, savings: 0.5 });
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [ratio, setRatio] = useState<Ratio>({ investings: 50, savings: 50 });
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [categories, setCategories] = useState(["Travel", "Food"]);
+  const [recSpending, setRecSpending] = useState<number>(50);
+  const [idCounter, setIdCounter] = useState(0);
 
-  const handleChange = (newVal: string, index: number) => {
+  const addExpense = () => {
+    const newExpense: Expense = {
+      id: idCounter,
+      category: "travel",
+      amount: 0,
+      isRecreational: false,
+    };
+    setExpenses([...expenses, newExpense]);
+    setIdCounter(idCounter + 1);
+  };
+
+  const changeExpenseAmount = (newVal: string, id: number) => {
     if (parseInt(newVal)) {
       const newExpenses = [...expenses];
-      newExpenses[index] = Number(newVal);
+      const expense = newExpenses.find((e) => e.id === id)!;
+      expense.amount = Number(newVal);
       setExpenses(newExpenses);
     }
   };
 
+  const removeExpense = (id: number) => {
+    setExpenses(expenses.filter((expense) => expense.id !== id));
+  };
+
   // Return the sum of all expenses
   const getTotalExpenses = () => {
-    return [...expenses].reduce((total, current) => total + current, 0);
+    return [...expenses].reduce((total, current) => total + current.amount, 0);
   };
 
   const changeRatios = (newVal: string) => {
@@ -45,6 +75,11 @@ export default function Home() {
     }
   };
 
+  const toggleRecreational = (id: number) => {
+    const expense = expenses.find((exp) => exp.id === id)!;
+    expense.isRecreational = !expense?.isRecreational;
+  };
+
   return (
     <>
       <p>Last month's income:</p>
@@ -54,18 +89,43 @@ export default function Home() {
         onChange={(e) => setIncome(parseFloat(e.target.value))}
       />
       <p>Expenses:</p>
-      <button onClick={() => setExpenses([...expenses, 0])}>+</button>
-      {expenses.map((val, index) => (
-        <input
-          type="number"
-          key={index}
-          value={val}
-          onChange={(e) => handleChange(e.target.value, index)}
-        />
-      ))}
+      <button onClick={addExpense}>+</button>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {expenses.map((exp) => (
+          <div>
+            <select>
+              {categories.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              key={exp.id}
+              value={exp.amount}
+              onChange={(e) => changeExpenseAmount(e.target.value, exp.id)}
+            />
+            {/* <input type="checkbox" id={exp.id.toString()} checked={exp.isRecreational} onChange={() => {
+              expenses.map(e => {
+                if (e.id === exp.id) {
+                  retur
+                }
+              })
+            }} */}
+            <button onClick={() => removeExpense(exp.id)}>Remove</button>
+          </div>
+        ))}
+      </div>
       <br />
       <br />
       <hr />
+      {/* <p>Recreational spending expense:</p>
+      <input
+        type="number"
+        value={recSpending}
+        onChange={(e) => setRecSpending(Number(e.target.value))}
+      /> */}
       <p>Investings : Savings</p>
       <input
         type="number"
@@ -81,10 +141,16 @@ export default function Home() {
       {!errorMsg && (
         <>
           <p>
-            Invest: {((income - getTotalExpenses()) / 100) * ratio.investings}
+            Invest:{" "}
+            {((income - recSpending - getTotalExpenses()) / 100) *
+              ratio.investings}
           </p>
           <br />
-          <p>Save: {((income - getTotalExpenses()) / 100) * ratio.savings}</p>
+          <p>
+            Save:{" "}
+            {((income - recSpending - getTotalExpenses()) / 100) *
+              ratio.savings}
+          </p>
         </>
       )}
       <p style={{ color: "red" }}>{errorMsg}</p>
