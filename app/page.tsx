@@ -10,6 +10,7 @@ interface Ratio {
 }
 
 interface Category {
+  id: number;
   name: string;
 }
 
@@ -25,9 +26,13 @@ export default function Home() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [ratio, setRatio] = useState<Ratio>({ investings: 50, savings: 50 });
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [categories, setCategories] = useState(["Travel", "Food"]);
+  const [categories, setCategories] = useState<Category[]>([
+    { id: 1, name: "Travel" },
+    { id: 2, name: "Food" },
+  ]);
   const [recSpending, setRecSpending] = useState<number>(50);
   const [idCounter, setIdCounter] = useState(0);
+  const [categoryInput, setCategoryInput] = useState<string>("");
 
   const addExpense = () => {
     const newExpense: Expense = {
@@ -82,6 +87,12 @@ export default function Home() {
     setExpenses(newExpenses);
   };
 
+  const addCategory = () => {
+    setCategories([...categories, { id: idCounter, name: categoryInput }]);
+    setCategoryInput("");
+    setIdCounter(idCounter + 1);
+  };
+
   return (
     <>
       <p>Last month's income:</p>
@@ -96,9 +107,9 @@ export default function Home() {
         {expenses.map((exp) => (
           <div style={{ marginBottom: "1.5rem" }}>
             <select>
-              {categories.map((item) => (
-                <option key={item} value={item}>
-                  {item}
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
                 </option>
               ))}
             </select>
@@ -120,6 +131,19 @@ export default function Home() {
           </div>
         ))}
       </div>
+      <br />
+      <br />
+      <hr />
+      <p>Categories:</p>
+      {categories.map((cat) => (
+        <span>{cat.name}, </span>
+      ))}
+      <br />
+      <input
+        value={categoryInput}
+        onChange={(e) => setCategoryInput(e.target.value)}
+      />
+      <button onClick={addCategory}>Add Category</button>
       <br />
       <br />
       <hr />
