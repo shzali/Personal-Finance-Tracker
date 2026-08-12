@@ -7,7 +7,6 @@ export const GET = async (
   const { date } = await params;
   const [month, year] = date.split("-");
 
-  console.log("TRYING TO FETCH DATA ...");
   let data = await prisma.month.findFirst({
     where: {
       month,
@@ -16,22 +15,48 @@ export const GET = async (
   });
 
   if (!data) {
-    console.log("DATA NOT FOUND. CREATING DATA ...");
     data = await prisma.month.create({
       data: {
         month,
         year,
-        income: "0",
-        investingPercentageOverride: 0,
-        recreationalLimitOverride: 0,
+        income: 0,
+        investingPercentage: 0,
+        funLimit: 0,
         totalNecessaryExpenses: 0,
-        totalRecreationalExpenses: 0,
-        expensesSpillover: 0,
+        totalFunExpenses: 0,
       },
     });
   } else {
-    console.log("DATA FOUND");
   }
 
-  console.log(data);
+  // TODO - return data
+  return Response.json({ data }, { status: 200 });
+};
+
+export const PUT = async (
+  req: Request,
+  { params }: { params: Promise<{ date: string }> },
+) => {
+  const { date } = await params;
+  const [month, year] = date.split("-");
+
+  const body = await req.json();
+
+  await prisma.month.update({
+    where: {
+      id: {
+        month,
+        year,
+      },
+    },
+    data: {
+      month,
+      year,
+      income: body.income,
+      investingPercentage: body.investingPercentage,
+      funLimit: body.funLimit,
+      totalNecessaryExpenses: body.necessaryExpenses,
+      totalFunExpenses: body.funExpenses,
+    },
+  });
 };

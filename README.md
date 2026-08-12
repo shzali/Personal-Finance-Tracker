@@ -20,7 +20,7 @@ I specifically need something that matches my approach to tracking and managing 
 
 ## Planned Features
 
--
+See [todos.md](./todos.md) for a list of features yet to be implemented.
 
 ## Changelog
 

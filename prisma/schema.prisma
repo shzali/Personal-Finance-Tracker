@@ -13,14 +13,13 @@ datasource db {
 }
 
 model Month {
-  month                       String
-  year                        String
-  income                      String
-  investingPercentageOverride Int?
-  recreationalLimitOverride   Int?
-  totalNecessaryExpenses      Int
-  totalRecreationalExpenses   Int
-  expensesSpillover           Int
+  month                  String
+  year                   String
+  income                 Int
+  investingPercentage    Int
+  funLimit               Int
+  totalNecessaryExpenses Int
+  totalFunExpenses       Int
 
   @@id(name: "id", [month, year])
 }

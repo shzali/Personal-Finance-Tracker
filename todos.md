@@ -1,0 +1,5 @@
+- [ ] Expenses are persistent
+- [ ] Fun carryovers affect the fun budget for the next month
+- [ ] Data does not save if expenses are more than income
+- [ ] Pot for big purchases
+- [ ] Can switch between years

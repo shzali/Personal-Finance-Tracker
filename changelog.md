@@ -3,6 +3,8 @@
 - A list of months is displayed. Clicking on a month will go to its corresponding expenses page (data does not persist yet).
 - 'Recreational' renamed to 'Fun' for simplicity.
 - 'Fun' money is a small, short-term purchase for pure enjoyment. Can specify the Fun budget, and Fun expenses will deduct from it.
+- Shows Fun money spillover
+- All monthly data, except the individual expenses (for now), is persistent if 'SAVE' is clicked.
 
 ### 7th August 2026
 

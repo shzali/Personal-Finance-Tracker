@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { redirect, RedirectType, useParams } from "next/navigation";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -28,18 +28,6 @@ interface Expense {
 const MonthExpenses = () => {
   const params = useParams<{ month: string }>();
 
-  useEffect(() => {
-    const getMonthData = async () => {
-      try {
-        const res = axios.get(`/api/months/${params.month}-2026`);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    getMonthData();
-  }, []);
-
   const [income, setIncome] = useState<number>(0);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [ratio, setRatio] = useState<Ratio>({ investings: 50, savings: 50 });
@@ -52,6 +40,30 @@ const MonthExpenses = () => {
   const [idCounter, setIdCounter] = useState(0);
   const [categoryInput, setCategoryInput] = useState<string>("");
   const [maxFunAmount, setMaxFunAmount] = useState<number>(50);
+
+  useEffect(() => {
+    const getMonthData = async () => {
+      try {
+        const res = await axios.get(`/api/months/${params.month}-2026`);
+
+        if (res.status === 200) {
+          console.log("STATUS OK");
+          const data = res.data.data;
+          console.log(data);
+          setIncome(Number(data.income));
+          setRatio({
+            investings: data.investingPercentage,
+            savings: 100 - data.investingPercentage,
+          });
+          setMaxFunAmount(data.funLimit);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    getMonthData();
+  }, []);
 
   const addExpense = () => {
     const newExpense: Expense = {
@@ -79,7 +91,7 @@ const MonthExpenses = () => {
 
   // Return the sum of all expenses
   const getTotalExpenses = () => {
-    return [...expenses].reduce((total, current) => total + current.amount, 0);
+    return expenses.reduce((acc, cur) => acc + cur.amount, 0);
   };
 
   const changeRatios = (newVal: string) => {
@@ -113,17 +125,41 @@ const MonthExpenses = () => {
   };
 
   const getTotalFunExpenses = () => {
-    // Go through the expenses array, and get the total amount of all 'fun' expenses
     return expenses.reduce(
       (acc, cur) => (cur.isFun ? acc + cur.amount : acc),
       0,
     );
   };
 
+  // If the total Fun expenses amount has exceeded the Fun budget,
+  // then get the amount that has exceeded the budget
+  const getFunExpensesSpillover = () => {
+    const totalFunExpenses = getTotalFunExpenses();
+    return totalFunExpenses > maxFunAmount
+      ? totalFunExpenses - maxFunAmount
+      : 0;
+  };
+
+  // Save data to database
+  const saveData = async () => {
+    try {
+      const res = await axios.put(`/api/months/${params.month}-2026`, {
+        income,
+        investingPercentage: ratio.investings,
+        funLimit: maxFunAmount,
+        necessaryExpenses: getTotalExpenses() - getTotalFunExpenses(),
+        funExpenses: getTotalFunExpenses(),
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <>
       {months.includes(params.month.toLowerCase()) ? (
         <>
+          <button onClick={() => redirect("/", RedirectType.push)}>BACK</button>
           <p>Income:</p>
           <input
             type="number"
@@ -167,6 +203,12 @@ const MonthExpenses = () => {
             onChange={(e) => setMaxFunAmount(Number(e.target.value))}
           />
           <p>Fun money left: {maxFunAmount - getTotalFunExpenses()}</p>
+          {getTotalFunExpenses() > maxFunAmount && (
+            <p style={{ color: "red" }}>
+              Spillover: {getFunExpensesSpillover()}
+            </p>
+          )}
+          <p>TOTAL EXPENSES: {getTotalExpenses()}</p>
           <br />
           <br />
           <hr />
@@ -183,12 +225,6 @@ const MonthExpenses = () => {
           <br />
           <br />
           <hr />
-          {/* <p>Fun spending expense:</p>
-      <input
-        type="number"
-        value={recSpending}
-        onChange={(e) => setRecSpending(Number(e.target.value))}
-      /> */}
           <p>Investings : Savings</p>
           <input
             type="number"
@@ -213,8 +249,12 @@ const MonthExpenses = () => {
               <p>
                 Save:{" "}
                 {((income - recSpending - getTotalExpenses()) / 100) *
-                  ratio.savings}
+                  ratio.savings}{" "}
+                (with leftover Fun money added)
               </p>
+              <br />
+              <br />
+              <button onClick={saveData}>SAVE</button>
             </>
           )}
           <p style={{ color: "red" }}>{errorMsg}</p>
