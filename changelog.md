@@ -1,3 +1,7 @@
+### 13th August 2026
+
+- Added some more models: Expense and Category. This is for ensuring that individual expenses persist, and can be loaded when a page for a month loads.
+
 ### 12th August 2026
 
 - A list of months is displayed. Clicking on a month will go to its corresponding expenses page (data does not persist yet).

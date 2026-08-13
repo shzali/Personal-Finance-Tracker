@@ -20,7 +20,7 @@ interface Category {
 
 interface Expense {
   id: number;
-  category: string;
+  categoryId: number;
   amount: number;
   isFun: boolean;
 }
@@ -68,7 +68,7 @@ const MonthExpenses = () => {
   const addExpense = () => {
     const newExpense: Expense = {
       id: idCounter,
-      category: "travel",
+      categoryId: 1,
       amount: 0,
       isFun: false,
     };
@@ -142,6 +142,7 @@ const MonthExpenses = () => {
 
   // Save data to database
   const saveData = async () => {
+    console.log(expenses);
     try {
       const res = await axios.put(`/api/months/${params.month}-2026`, {
         income,
@@ -149,6 +150,7 @@ const MonthExpenses = () => {
         funLimit: maxFunAmount,
         necessaryExpenses: getTotalExpenses() - getTotalFunExpenses(),
         funExpenses: getTotalFunExpenses(),
+        expenses,
       });
     } catch (err) {
       console.error(err);

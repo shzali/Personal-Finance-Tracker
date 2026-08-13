@@ -7,7 +7,7 @@ export const GET = async (
   const { date } = await params;
   const [month, year] = date.split("-");
 
-  let data = await prisma.month.findFirst({
+  let data = await prisma.monthExpenses.findFirst({
     where: {
       month,
       year,
@@ -15,7 +15,7 @@ export const GET = async (
   });
 
   if (!data) {
-    data = await prisma.month.create({
+    data = await prisma.monthExpenses.create({
       data: {
         month,
         year,
@@ -42,7 +42,7 @@ export const PUT = async (
 
   const body = await req.json();
 
-  await prisma.month.update({
+  await prisma.monthExpenses.update({
     where: {
       id: {
         month,

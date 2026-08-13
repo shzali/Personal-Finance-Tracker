@@ -12,7 +12,7 @@ datasource db {
   provider = "postgresql"
 }
 
-model Month {
+model MonthExpenses {
   month                  String
   year                   String
   income                 Int
@@ -20,6 +20,26 @@ model Month {
   funLimit               Int
   totalNecessaryExpenses Int
   totalFunExpenses       Int
+  expenses               Expense[]
 
   @@id(name: "id", [month, year])
+}
+
+model Expense {
+  id     Int     @id @default(autoincrement())
+  amount Int
+  isFun  Boolean
+
+  month        MonthExpenses @relation(fields: [expenseMonth, expenseYear], references: [month, year])
+  expenseMonth String
+  expenseYear  String
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String
+  expenses Expense[]
 }
