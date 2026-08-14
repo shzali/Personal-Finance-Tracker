@@ -1,3 +1,7 @@
+### 14th August 2026
+
+- Added a 'BigPurchaseMoney' model that will keep track of the pot for big purchase savings, including transactions from it.
+
 ### 13th August 2026
 
 - Added some more models: Expense and Category. This is for ensuring that individual expenses persist, and can be loaded when a page for a month loads.

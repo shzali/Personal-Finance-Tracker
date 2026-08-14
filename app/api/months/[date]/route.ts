@@ -41,22 +41,25 @@ export const PUT = async (
   const [month, year] = date.split("-");
 
   const body = await req.json();
+  console.log(body);
 
-  await prisma.monthExpenses.update({
-    where: {
-      id: {
-        month,
-        year,
-      },
-    },
-    data: {
-      month,
-      year,
-      income: body.income,
-      investingPercentage: body.investingPercentage,
-      funLimit: body.funLimit,
-      totalNecessaryExpenses: body.necessaryExpenses,
-      totalFunExpenses: body.funExpenses,
-    },
-  });
+  // TODO - make it a transaction. Rollback if either operation fails.
+
+  // await prisma.monthExpenses.update({
+  //   where: {
+  //     id: {
+  //       month,
+  //       year,
+  //     },
+  //   },
+  //   data: {
+  //     month,
+  //     year,
+  //     income: body.income,
+  //     investingPercentage: body.investingPercentage,
+  //     funLimit: body.funLimit,
+  //     totalNecessaryExpenses: body.necessaryExpenses,
+  //     totalFunExpenses: body.funExpenses,
+  //   },
+  // });
 };

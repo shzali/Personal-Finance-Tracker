@@ -214,6 +214,10 @@ const MonthExpenses = () => {
           <br />
           <br />
           <hr />
+          <p>'Big Purchase' Pot Contribution: £25</p>
+          <br />
+          <br />
+          <hr />
           <p>Categories:</p>
           {categories.map((cat) => (
             <span>{cat.name}, </span>

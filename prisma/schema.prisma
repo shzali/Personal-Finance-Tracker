@@ -21,6 +21,7 @@ model MonthExpenses {
   totalNecessaryExpenses Int
   totalFunExpenses       Int
   expenses               Expense[]
+  bigPurchaseMoney       BigPurchaseMoney[]
 
   @@id(name: "id", [month, year])
 }
@@ -42,4 +43,19 @@ model Category {
   id       Int       @id @default(autoincrement())
   name     String
   expenses Expense[]
+}
+
+model BigPurchaseMoney {
+  id     Int                  @id @default(autoincrement())
+  amount Decimal
+  type   BigPurchaseMoneyType
+
+  month        MonthExpenses @relation(fields: [expenseMonth, expenseYear], references: [month, year])
+  expenseMonth String
+  expenseYear  String
+}
+
+enum BigPurchaseMoneyType {
+  CONTRIBUTION
+  TRANSACTION
 }
